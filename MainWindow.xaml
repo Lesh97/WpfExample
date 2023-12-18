@@ -7,18 +7,19 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
+        <!-- 컨트롤 템플릿 부분 -->
         <Style x:Key="CustomButton" TargetType="{x:Type Button}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border 
-                       BorderBrush="{TemplateBinding BorderBrush }" 
-                       BorderThickness="{TemplateBinding BorderThickness}" 
-                       CornerRadius="10" 
-                       Background="{TemplateBinding Background}">
+                           BorderBrush="{TemplateBinding BorderBrush }" 
+                           BorderThickness="{TemplateBinding BorderThickness}" 
+                           CornerRadius="10" 
+                           Background="{TemplateBinding Background}">
                             <ContentPresenter 
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center">
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
                             </ContentPresenter>
                         </Border>
                     </ControlTemplate>
@@ -30,31 +31,7 @@
                        Foreground="{Binding Brush}"></TextBlock>
         </ControlTemplate>
 
-
-        <Style x:Key="MouseOverStyle" TargetType="TextBox">
-            <!-- 1. Setter Property 설정 -->
-            <Setter Property="Text" Value="Hello World!!" />
-            <Setter Property="Foreground" Value="SkyBlue" />
-            <Setter Property="FontSize" Value="15" />
-            <!-- 2. 어떤 Property Trigger를 적용할 지 설정 -->
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <!-- 3. 기존에 설정한 Setter Property를 어떻게 변경할 건지 설정 -->
-                    <Setter Property="Text" Value="Little bit Sad World..." />
-                    <Setter Property="Foreground" Value="Silver" />
-                    <Setter Property="FontSize" Value="20" />
-                    <Setter Property="FontWeight" Value="Bold" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="BarStyle" TargetType="ProgressBar">
-            <Setter Property="Foreground" Value="Green" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=progressBar, Path=Value}" Value="100">
-                    <Setter Property="Foreground" Value="DeepSkyBlue"></Setter>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+        <!-- 데이터 템플릿 부분 -->
         <local:ItemSelector x:Key="ItemSelector"></local:ItemSelector>
         <DataTemplate x:Key="Man">
             <StackPanel>
@@ -80,7 +57,40 @@
 
         <DataTemplate DataType="{x:Type local:TestViewModel}">
             <local:TestView></local:TestView>
-        </DataTemplate>    
+        </DataTemplate>
+
+        <!-- 프로퍼티 트리거 부분 -->
+        <Style x:Key="MouseOverStyle" TargetType="TextBox">
+            <!-- 1. Setter Property 설정 -->
+            <Setter Property="Text" Value="Hello World!!" />
+            <Setter Property="Foreground" Value="SkyBlue" />
+            <Setter Property="FontSize" Value="15" />
+            <!-- 2. 어떤 Property Trigger를 적용할 지 설정 -->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <!-- 3. 기존에 설정한 Setter Property를 어떻게 변경할 건지 설정 -->
+                    <Setter Property="Text" Value="Little bit Sad World..." />
+                    <Setter Property="Foreground" Value="Silver" />
+                    <Setter Property="FontSize" Value="20" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- 데이터 트리거 부분 -->
+        <Style x:Key="BarStyle" TargetType="ProgressBar">
+            <!-- Setter Property 설정 -->
+            <Setter Property="Foreground" Value="Green" />
+            <!-- Style.Triggers를 설정한다 -->
+            <Style.Triggers>
+                <!-- DataTrigger를 만들고 데이터 Binding을 한다 -->
+                <DataTrigger Binding="{Binding ElementName=progressBar, Path=Value}" Value="100">
+                    <Setter Property="Foreground" Value="DeepSkyBlue"></Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -115,6 +125,18 @@
                 </Style>
             </ComboBox.ItemContainerStyle>
         </ComboBox>
+        
+        <ListBox Grid.Column="1"
+				ItemsSource="{Binding Students}"
+				ItemTemplateSelector="{StaticResource ItemSelector}"
+				>
+        </ListBox>
+        <ContentControl Grid.Row="1"
+                        Grid.Column="1"
+                        Content="{Binding CurrentViewModel}"
+                        >
+        </ContentControl>
+
         <TextBox 
             Grid.Column="2"
             Width="200" 
@@ -124,6 +146,7 @@
             Style="{StaticResource MouseOverStyle}"
             >
         </TextBox>
+        
         <TextBox Grid.Column="3" 
                  Style="{StaticResource MouseOverStyle}"
                  HorizontalContentAlignment="Center"
@@ -152,6 +175,7 @@
                 </EventTrigger>
             </TextBox.Triggers>
         </TextBox>
+        
         <StackPanel Grid.Row="1"
                     Grid.Column="2"
                     >
@@ -172,14 +196,5 @@
                          >
             </ProgressBar>
         </StackPanel>
-        <ListBox Grid.Column="1"
-				ItemsSource="{Binding Students}"
-				ItemTemplateSelector="{StaticResource ItemSelector}"
-				>
-        </ListBox>
-        <ContentControl Grid.Row="1"
-                        Grid.Column="1"
-                        Content="{Binding CurrentViewModel}"
-                        ></ContentControl>
     </Grid>
 </Window>
